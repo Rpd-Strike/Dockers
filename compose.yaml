@@ -1,0 +1,62 @@
+version: '3.4'
+
+services:
+  vpn:
+    image: dperson/openvpn-client
+    container_name: ovpn
+    
+    cap_add:
+      - NET_ADMIN
+    
+    read_only: true
+    tmpfs:
+      - /run
+      - /tmp
+    security_opt:
+      - label:disable
+    
+    stdin_open: true
+    tty: true
+    
+    volumes:
+      - /dev/net:/dev/net:z
+      - ~/ovpns:/vpn
+    environment:
+      TZ: 'London/Europe'
+
+    # * Note: Add port forwards here for services running behind the vpn 
+    ports:
+      - 8112:8112 # Deluge
+    command:
+      openvpn --config /vpn/treatfree.ovpn --askpass /vpn/treat_auth.txt
+    
+    restart: unless-stopped
+
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    
+    # * Custom Dockerfile
+    # build:
+    #   context: ./deluge
+    #   dockerfile: Dockerfile
+  
+    volumes:
+      - /home/treat/dockers/deluge/volumes/config:/config
+      - /home/treat/dockers/deluge/volumes/downloads:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=London/Europe
+      # - DELUGE_LOGLEVEL=error # optional
+    network_mode: service:vpn
+    
+    restart: unless-stopped
+    depends_on:
+      - vpn
+
+networks:
+  pirate_net:
+    driver: bridge
+
+# TODO: Env file for timezone
