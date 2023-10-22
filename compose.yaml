@@ -62,18 +62,6 @@ services:
     depends_on:
       - vpn
 
-  #** DDclient for DynamicDNS
-  ddclient:
-    image: lscr.io/linuxserver/ddclient:latest
-    container_name: ddclient
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=London/Europe
-    volumes:
-      - ./ddclient/config:/config
-    restart: unless-stopped
-
 networks:
   pirate_net:
     driver: bridge
