@@ -1,6 +1,8 @@
 version: '3.4'
 
 services:
+
+  #** OpenVPN Container
   vpn:
     image: dperson/openvpn-client
     container_name: ovpn
@@ -35,6 +37,7 @@ services:
     
     restart: unless-stopped
 
+  #** Torrent client container
   deluge:
     image: lscr.io/linuxserver/deluge:latest
     container_name: deluge
@@ -58,6 +61,18 @@ services:
     restart: unless-stopped
     depends_on:
       - vpn
+
+  #** DDclient for DynamicDNS
+  ddclient:
+    image: lscr.io/linuxserver/ddclient:latest
+    container_name: ddclient
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=London/Europe
+    volumes:
+      - ./ddclient/ddclient.config:/config
+    restart: unless-stopped
 
 networks:
   pirate_net:
