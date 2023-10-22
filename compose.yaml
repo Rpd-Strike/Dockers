@@ -71,7 +71,7 @@ services:
       - PGID=1000
       - TZ=London/Europe
     volumes:
-      - ./ddclient/ddclient.config:/config
+      - ./ddclient/config:/config
     restart: unless-stopped
 
 networks:
