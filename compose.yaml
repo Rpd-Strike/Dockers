@@ -2,24 +2,43 @@ version: '3.4'
 
 services:
 
-  #** OpenVPN Container
+  browser:
+    image: lscr.io/linuxserver/chromium:latest
+    container_name: chromium
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CHROME_CLI=https://google.com/ #optional
+      - CUSTOM_USER=treat
+      - PASSWORD=${PASSWORD_BROWSER}
+      - CUSTOM_PORT=4445
+      - CUSTOM_HTTPS_PORT=4444
+    volumes:
+      - /path/to/config:/config
+    shm_size: "1gb"
+    network_mode: service:vpn
+    restart: unless-stopped
+
   vpn:
     image: dperson/openvpn-client
     container_name: ovpn
-    
+
     cap_add:
       - NET_ADMIN
-    
+
     read_only: true
     tmpfs:
       - /run
       - /tmp
     security_opt:
       - label:disable
-    
+
     stdin_open: true
     tty: true
-    
+
     volumes:
       - /dev/net:/dev/net:z
       - ~/ovpns:/vpn
@@ -31,22 +50,23 @@ services:
     # * Note: Add port forwards here for services running behind the vpn 
     ports:
       - 8112:8112 # Deluge
-    command:
-      openvpn --config /vpn/treatfree.ovpn --askpass /vpn/treat_auth.txt
+      - 4444:4444 # Browser https
+      - 4445:4445 # Browser http
+    command: openvpn --config /vpn/treatfree.ovpn --askpass /vpn/treat_auth.txt
     # TODO: ENV file for --config and --askpass args + example
-    
+
     restart: unless-stopped
 
   #** Torrent client container
   deluge:
     image: lscr.io/linuxserver/deluge:latest
     container_name: deluge
-    
+
     # * Custom Dockerfile
     # build:
     #   context: ./deluge
     #   dockerfile: Dockerfile
-  
+
     volumes:
       - ./deluge/volumes/config:/config
       - ./deluge/volumes/downloads:/downloads
@@ -57,7 +77,7 @@ services:
       # TODO: Use ENV
       # - DELUGE_LOGLEVEL=error # optional
     network_mode: service:vpn
-    
+
     restart: unless-stopped
     depends_on:
       - vpn
