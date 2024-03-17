@@ -95,6 +95,14 @@ services:
     privileged: true
     network_mode: host
 
+  # Doom
+  doom:
+    container_name: doom
+    image: callumhoughton22/doom-in-docker:0.1
+    restart: unless-stopped
+    ports: 
+      - 6660:8080
+
 networks:
   pirate_net:
     driver: bridge
