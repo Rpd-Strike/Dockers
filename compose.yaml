@@ -17,7 +17,7 @@ services:
       - CUSTOM_PORT=4445
       - CUSTOM_HTTPS_PORT=4444
     volumes:
-      - /path/to/config:/config
+      - ./deluge/volumes/watch:/config/Downloads
     shm_size: "1gb"
     network_mode: service:vpn
     restart: unless-stopped
@@ -70,6 +70,7 @@ services:
     volumes:
       - ./deluge/volumes/config:/config
       - ./deluge/volumes/downloads:/downloads
+      - ./deluge/volumes/watch:/watch
     environment:
       - PUID=1000
       - PGID=1000
