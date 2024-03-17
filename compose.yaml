@@ -83,6 +83,18 @@ services:
     depends_on:
       - vpn
 
+  # Home Assistant
+  hass:
+    container_name: hass
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ./hass/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+
 networks:
   pirate_net:
     driver: bridge
