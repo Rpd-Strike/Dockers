@@ -12,6 +12,14 @@ pkgs.mkShell {
     direnv
     neofetch
 
+    # Better git experience
+    stgit
+
+    # don't even bother installing docker ??? WTF?? Black magic???
+    # You do have to setup the docker daemon though (Imagine if you had NixOS...)
+    #   (at least it can be a user script to perma-start the user level docker daemon)
+    docker
+
     # For lsusb
     usbutils
   ];
