@@ -22,5 +22,8 @@ pkgs.mkShell {
 
     # For lsusb
     usbutils
+
+    # For whatever
+    nodejs
   ];
 }
