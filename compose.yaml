@@ -95,6 +95,28 @@ services:
     privileged: true
     network_mode: host
 
+  # Obsidian
+  obsidian:
+    image: 'ghcr.io/sytone/obsidian-remote:latest'
+    container_name: obsidian-remote
+    restart: unless-stopped
+    ports:
+      - 9620:9620
+      - 9621:9621
+    volumes:
+      - ./obsidian/vaults:/vaults
+      - ./obsidian/config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=London/Europe
+      - DOCKER_MODS=linuxserver/mods:universal-git
+      - CUSTOM_PORT=9620
+      - CUSTOM_HTTPS_PORT=9621 
+      # - CUSTOM_USER=""
+      # - PASSWORD=""
+      # - SUBFOLDER=""
+
   # Doom
   doom:
     container_name: doom
