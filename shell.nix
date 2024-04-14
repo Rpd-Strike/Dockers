@@ -25,5 +25,10 @@ pkgs.mkShell {
 
     # For whatever
     nodejs
+
+    # Github actions/runners
+    kubernetes-helm # Helm
+    minikube
+    kubectl
   ];
 }
