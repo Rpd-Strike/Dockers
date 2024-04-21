@@ -57,6 +57,19 @@ services:
 
     restart: unless-stopped
 
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - 8010:8080
+    volumes:
+      - ./jenkins/jenkins_home:/var/jenkins_home
+    depends_on:
+      - jenkins-ssh-agent
+    # network_mode: host
+
+  jenkins-ssh-agent:
+    image: jenkins/ssh-agent
+
   #** Torrent client container
   deluge:
     image: lscr.io/linuxserver/deluge:latest
